@@ -17,11 +17,14 @@ source("apikey.R")
 # See the interactive console for more detail:
 #   https://developer.nytimes.com/movie_reviews_v2.json#/Console/GET/reviews/search.json
 # You should use YOUR api key (as the `api-key` parameter)
-
+base.URI <- "https://api.nytimes.com/svc/movies/v2/"
+resource <- "/reviews/search.json"
+query.params <- list("api_key" = nyt.apikey, query = movie)
 
 # Send the HTTP Request to download the data
 # Extract the content and convert it from JSON
-
+response <- GET(paste0(base.URI, resource), query.params)
+body <- fromJSON(content(response, "text"))
 
 # What kind of data structure did this return?
 
