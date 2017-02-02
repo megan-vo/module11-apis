@@ -3,6 +3,7 @@
 # Load the httr and jsonlite libraries for accessing data
 library("httr")
 library("jsonlite")
+library("dplyr")
 
 ## For these questions, look at the API documentation to identify the appropriate endpoint and information.
 ## Then send GET() request to fetch the data, then extract the answer to the question
@@ -11,30 +12,44 @@ library("jsonlite")
 response <- GET("http://data.unhcr.org/api/stats/time_series_years.json")
 body <- content(response, "text")
 years <- fromJSON(body)
-years
+years  # vector
 
 # What is the "country code" for the "Syrian Arab Republic"?
-response <- GET("http://data.unhcr.org/api/countries/list.json")
-countries.frame <- fromJSON(content(response, "text"))
-filter(countries.frame, name_en == "Afghanistan") %>% 
+response <- GET("http://data.unhcr.org/api/countries/list.json")  # Sends request to get response
+body <- fromJSON(content(response, "text"))  #  Get the content out and convert from JSON
+View(body)
+filter(body, name_en == "Afghanistan") %>%  
           select(country_code)
 
 # How many persons of concern from Syria applied for residence in the USA in 2013?
 # Hint: you'll need to use a query parameter
 # Use the `str()` function to print the data of interest
 # See http://www.unhcr.org/en-us/who-we-help.html for details on these terms
-
+query.params <- list(year = 2013, 
+                         country_of_residence = "USA", 
+                         country_of_origin = "SYR")
+response <- GET("http://data.unhcr.org/api/stats/persons_of_concern.json", query = query.params)
+usa.reside <- fromJSON(content(response, "text"))
+str(usa.reside)
 
 ## And this was only 2013...
 
 
 # How many *refugees* from Syria settled the USA in all years in the data set (2000 through 2013)?
 # Hint: check out the "time series" end points
-
+query.params <- list(population_type_code = "RF",
+                     year = 2013, 
+                     country_of_residence = "USA", 
+                     country_of_origin = "SYR")
+response <- GET("http://data.unhcr.org/api/stats/time_series_all_years.json", query = query.params)
+usa.reside <- fromJSON(content(response, "text"))
+is.data.frame(usa.reside)
+View(usa.reside)
+str(usa.reside)
 
 # Use the `plot()` function to plot the year vs. the value.
 # Add `type="o"` as a parameter to draw a line
-
+plot(usa.reside$year, usa.reside$value, type = "o")
 
 
 # Pick one other country in the world (e.g., Turkey).
