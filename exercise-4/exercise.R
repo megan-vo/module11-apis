@@ -4,7 +4,7 @@ library("jsonlite")
 
 # Use `source()` to load your API key variable.
 # Make sure you've set your working directory!
-
+source("apikey.R")
 
 
 # Define a function that takes in the name of a movie as an argument and returns

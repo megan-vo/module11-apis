@@ -1,1 +1,1 @@
-nty.apikey <- "1a78465dcb79421693ada65278f47c40"
+nyt.apikey <- "1a78465dcb79421693ada65278f47c40"
